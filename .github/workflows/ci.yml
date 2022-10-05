@@ -41,8 +41,9 @@ jobs:
           wget https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-7.0.1-linux-amd64 --output-document="/usr/local/bin/bosh"
           chmod +x /usr/local/bin/bosh
           bosh --version
-          wget https://github.com/cloudfoundry/credhub-cli/releases/download/2.9.4/credhub-linux-2.9.4.tgz -P /tmp
-          tar xzvf /tmp/credhub-linux-2.9.4.tgz -C /tmp
-          mv /tmp/credhub /usr/local/bin/credhub
+          wget https://github.com/cloudfoundry/credhub-cli/releases/download/2.9.4/credhub-linux-2.9.4.tgz -P ~/
+          tar xzvf ~/credhub-linux-2.9.4.tgz
+          mv credhub /usr/local/bin/credhub
           chmod +x /usr/local/bin/credhub
           credhub --version
+          rm ~/credhub-linux-2.9.4.tgz
