@@ -13,25 +13,17 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  run-integration-tests-linux-env-with-edge-capi:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+          check-latest: true
       - name: Install Tools
         run: |
           wget https://github.com/cloudfoundry/bosh-bootloader/releases/download/v8.4.110/bbl-v8.4.110_linux_x86-64 -P /tmp
@@ -47,3 +39,16 @@ jobs:
           chmod +x /usr/local/bin/credhub
           credhub --version
           rm ~/credhub-linux-2.9.4.tgz
+      - name: Run Integration Tests
+        run: |
+          export CF_INT_PASSWORD="asdf"
+          export CF_INT_OIDC_USERNAME="admin-oidc"
+          export CF_INT_OIDC_PASSWORD="asdf"
+          export CF_INT_API="https://api.ENV.cf-app.com"
+          export CF_DIAL_TIMEOUT=15
+          export CF_USERNAME=admin
+          export FLAKE_ATTEMPTS=2
+          export NODES=16
+          ls -al
+          go install github.com/onsi/ginkgo/ginkgo@v1.16.4
+          
